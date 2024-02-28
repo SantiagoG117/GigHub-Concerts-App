@@ -18,6 +18,13 @@ namespace GigHub.View_Models
         public int GenreId { get; set; } 
         public IList<Genre> Genres { get; set; }
 
+        public DateTime DateTime
+        {
+            get
+            {
+                return DateTime.Parse(string.Format("{0} {1}", Date, Time));
+            }
 
+        }
     }
 }
