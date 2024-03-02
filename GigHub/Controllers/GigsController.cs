@@ -21,6 +21,7 @@ namespace GigHub.Controllers
         [Authorize]
         public ActionResult Create()
         {
+            
             //Create the model
             var model = new GigFormViewModel
             {
@@ -35,12 +36,20 @@ namespace GigHub.Controllers
         [HttpPost]
         public ActionResult SaveGig(GigFormViewModel model)
         {
+            if (!ModelState.IsValid)
+            {
+                model.Genres = _context.Genres.ToList();
+                
+                return View("Create", model);
+
+            }
+
 
             //Save the Gig in the database
             var gig = new Gig
             {
                 ArtistId = User.Identity.GetUserId(),
-                DateTime = model.DateTime,
+                DateTime = model.GetDateTime(),
                 GenreId = model.GenreId,
                 Venue = model.Venue
 
