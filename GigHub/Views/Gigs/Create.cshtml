@@ -8,7 +8,6 @@
 
 @using (Html.BeginForm("SaveGig", "Gigs"))
 {
-    @Html.ValidationSummary()
     <div class="form-group">
         @Html.LabelFor(m => m.Venue)
         @Html.TextBoxFor(m => m.Venue, new { @class = "form-control" })
@@ -39,5 +38,10 @@
     <div>
         <button type="submit" class="btn btn-primary mt-1">Save</button>
     </div>
+}
+
+@section scripts
+{
+    @Scripts.Render("~/bundles/jqueryval")
 }
 
