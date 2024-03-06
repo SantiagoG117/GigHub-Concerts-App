@@ -18,3 +18,50 @@ select,
 textarea {
     max-width: 280px;
 }
+
+/* Bootstrap Overrides */
+:root {
+    --bs-font-sans-serif: Lato, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", "Noto Sans", "Liberation Sans", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+}
+
+body {
+    font-size: 17px;
+}
+
+.bg-dark {
+    --bs-bg-opacity: 1;
+    background-color: #ff4342 !important;
+}
+
+.nav-link {
+    
+    color: #fff;
+    
+}
+
+.navbar-brand {
+    font-weight: 700;
+}
+
+.form-group{
+    margin-bottom: 20px;
+}
+
+.form-control {
+    font-size: 17px;
+    padding: 10px 5px;
+    border-radius: 9px;
+}
+
+.form-control:focus {
+    border-color: #2196f3;
+    box-shadow: none;
+    -webkit-box-shadow: none;
+}
+
+.btn {
+    font-size: 17px;
+    padding: 7px 20px;
+    border-radius: 9px
+}
+
