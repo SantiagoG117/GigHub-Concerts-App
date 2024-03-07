@@ -29,13 +29,13 @@ namespace GigHub.View_Models
 
         public IList<Genre> Genres { get; set; }
 
+        public IList<Gig> Gigs { get; set; }
+
 
         //Public methods
         public DateTime GetDateTime()
         {
             return DateTime.Parse(string.Format("{0} {1}", Date, Time));
-            
-
         }
     }
 }
