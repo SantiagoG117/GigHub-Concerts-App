@@ -54,7 +54,6 @@ namespace GigHub.Controllers
                 DateTime = model.GetDateTime(),
                 GenreId = model.GenreId,
                 Venue = model.Venue
-
             };
 
             _context.Gigs.Add(gig);

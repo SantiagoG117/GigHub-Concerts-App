@@ -14,6 +14,7 @@ namespace GigHub.Models
         //Navigation property to the ApplicationUser table
         
         public ApplicationUser Artist { get; set; }
+
         [Required]
         public string ArtistId { get; set; }// Foreign Key: ID's in  ApplicationUser class are string.
 
@@ -26,6 +27,7 @@ namespace GigHub.Models
 
         //Navigation property to the Genre table
         public Genre Genre { get; set; }
+
         [Required]
         public int GenreId { get; set; } //Foreign Key
 

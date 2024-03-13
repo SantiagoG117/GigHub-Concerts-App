@@ -24,7 +24,39 @@
                 <span class="genre">
                     @gig.Genre.Name
                 </span>
+                <button data-gig-id="@gig.Id" class="btn btn-default btn-sm pull-righ js-toggle-attendance"> Going ?</button>
             </div>
         </li>
     }
 </ul>
+
+@section scripts
+{
+    <script>
+        //!Ready event of jQuery's document object: To be triggered when the document is ready
+        $(document).ready(function () { 
+            //!Subscribe to the click event of the button with a class js-toggle-attendance
+            $(".js-toggle-attendance").click(function (e) { //e represents the event
+                //!From the event (e) we can get its source, which is the button
+                var button = $(e.target) 
+                //! AJAX post request
+                $.post(
+                    //!Data for the request
+                    "/api/attendances",
+                    //!Data to be sent in the request body 
+                    { gigId: button.attr("data-gig-id") }
+                )
+                        //!Post request returns a promise
+                        .done(function () {
+                            button//Get the button
+                            .removeClass("btn-default") //Remove the class
+                            .addClass("btn-info") //Add a new class
+                            .text("Going");//Change the label
+                        })
+                        .fail(function () {
+                            alert("Something failed");
+                        });
+            });
+        });
+    </script>
+}
