@@ -12,7 +12,6 @@ namespace GigHub.Models
         public int Id { get; set; }
 
         //Navigation property to the ApplicationUser table
-        
         public ApplicationUser Artist { get; set; }
 
         [Required]

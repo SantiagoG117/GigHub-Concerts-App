@@ -33,13 +33,18 @@ namespace GigHub.Models
                 //Override Delete Cascade
                 .WillCascadeOnDelete(false);
 
-            modelBuilder.Entity<ApplicationUser>()
-                .HasMany(u => u.Followers)
+            //**************** Relationship between application user and its followers and artists ****************
+
+            //An application user has many Followers (Collection)
+            modelBuilder.Entity<ApplicationUser>().HasMany(u => u.Followers)
+                //Each follower has a required artist 
                 .WithRequired(f => f.Artist)
+                //Turn off cascade delete
                 .WillCascadeOnDelete(false);
 
-            modelBuilder.Entity<ApplicationUser>()
-                .HasMany(u => u.Artists)
+            //An application user has many Artist (Collection)
+            modelBuilder.Entity<ApplicationUser>().HasMany(u => u.Artists)
+                //Each artist has a required follower
                 .WithRequired(a => a.Follower)
                 .WillCascadeOnDelete(false);
 

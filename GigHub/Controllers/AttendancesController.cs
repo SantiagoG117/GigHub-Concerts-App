@@ -35,19 +35,19 @@ namespace GigHub.Controllers
         /// </param>
         /// <returns></returns>
         [HttpPost]
-        public IHttpActionResult Attend(AttendanceDto attendanceDto) //AttendanceDto dto
+        public IHttpActionResult Attend(AttendanceDto dto) //AttendanceDto attendanceDto
         {
             //Returns the ID of the current user
             var userId = User.Identity.GetUserId(); 
 
             //Check if there is an attendance for the current user for the given gig
-            if (_context.Attendances.Any(a => a.AttendeeId == userId && a.GigId == attendanceDto.GigId))
+            if (_context.Attendances.Any(a => a.AttendeeId == userId && a.GigId == dto.GigId))
                 return BadRequest("The attendance already exists.");
 
             //Create the attendance
             var attendance = new Attendance
             {
-                GigId = attendanceDto.GigId,
+                GigId = dto.GigId,
                 AttendeeId = userId 
             };
 

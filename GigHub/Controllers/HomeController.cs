@@ -4,22 +4,23 @@ using System.Linq;
 using System.Web.Mvc;
 using GigHub.Models;
 using GigHub.View_Models;
+using Microsoft.AspNet.Identity;
 
 namespace GigHub.Controllers
 {
     public class HomeController : Controller
     {
         //Create access to the database
-        private readonly ApplicationDbContext _dbContext;
+        private readonly ApplicationDbContext _context;
 
         public HomeController()
         {
-            _dbContext = new ApplicationDbContext();
+            _context = new ApplicationDbContext();
         }
 
         protected override void Dispose(bool disposing)
         {
-            _dbContext.Dispose();
+            _context.Dispose();
         }
 
         
@@ -27,13 +28,19 @@ namespace GigHub.Controllers
         public ActionResult Index()
         {
             //Retrieve all upcoming gigs from the database
-            var upcomingGigs = _dbContext.Gigs
+            var upcomingGigs = _context.Gigs
                 .Include(g => g.Artist)
                 .Where(g => g.DateTime > DateTime.Now) // Get gigs that only exist in the future
                 .Include(g => g.Genre)
-                .ToList(); 
+                .ToList();
+
+            var model = new HomeViewModel
+            {
+                UpcomingGigs = upcomingGigs,
+                IsAuthenticatedUser = User.Identity.IsAuthenticated
+            };
             
-            return View(upcomingGigs);
+            return View(model);
         }
 
         public ActionResult About()

@@ -1,12 +1,14 @@
 ﻿@using GigHub.Models
-@model IList<GigHub.Models.Gig>
+@using Microsoft.AspNet.Identity
+@model GigHub.View_Models.HomeViewModel
 
 @{
     ViewBag.Title = "Home Page";
+    
 }
 
 <ul class="gigs">
-    @foreach (var gig in @Model)
+    @foreach (var gig in @Model.UpcomingGigs)
     {
         <li>
             <div class="date">
@@ -18,13 +20,26 @@
                 </div>
             </div>
             <div class="details">
-                <span class="artist">
-                    @gig.Artist.Name
-                </span>
+                @if (Model.IsAuthenticatedUser)
+                {
+                    <span class="artist">
+                        @gig.Artist.Name <button data-artist-id="@gig.ArtistId" id="followButton" class="btn btn-link btn-sm js-toggle-follow">Follow</button>
+                    </span>
+                }
+                else
+                {
+                    <span class="artist">
+                        @gig.Artist.Name
+                    </span>
+                }
+
                 <span class="genre">
                     @gig.Genre.Name
                 </span>
-                <button data-gig-id="@gig.Id" class="btn btn-default btn-sm pull-righ js-toggle-attendance"> Going ?</button>
+                @if (Model.IsAuthenticatedUser)
+                {
+                    <button data-gig-id="@gig.Id" class="btn btn-default btn-sm pull-right js-toggle-attendance"> Going ?</button>
+                }
             </div>
         </li>
     }
@@ -33,30 +48,56 @@
 @section scripts
 {
     <script>
-        //!Ready event of jQuery's document object: To be triggered when the document is ready
+        //?Ready event of jQuery's document object: To be triggered when the document is ready
         $(document).ready(function () { 
-            //!Subscribe to the click event of the button with a class js-toggle-attendance
-            $(".js-toggle-attendance").click(function (e) { //e represents the event
-                //!From the event (e) we can get its source, which is the button
-                var button = $(e.target) 
-                //! AJAX post request
+
+            //?*****************************************Going button*****************************************//
+            //Subscribe to the click event of the button with a class js-toggle-attendance
+            $(".js-toggle-attendance").click(function (event) { 
+                //From the event we can get its source
+                var button = $(event.target) 
+                // AJAX POST request
                 $.post(
-                    //!Data for the request
+                    //URL of the request
                     "/api/attendances",
-                    //!Data to be sent in the request body 
-                    { gigId: button.attr("data-gig-id") }
+                    //Data to be sent in the request body 
+                    { gigId: button.attr("data-gig-id") }   
                 )
-                        //!Post request returns a promise
-                        .done(function () {
-                            button//Get the button
-                            .removeClass("btn-default") //Remove the class
-                            .addClass("btn-info") //Add a new class
-                            .text("Going");//Change the label
-                        })
-                        .fail(function () {
-                            alert("Something failed");
-                        });
+                    //Promise of the post request
+                    .done(function () {
+                        button//Get the button
+                        .removeClass("btn-default") //Remove the class
+                        .addClass("btn-info") //Add a new class
+                        .text("Going");//Change the label
+                    })
+                    .fail(function () {
+                        alert("Something failed");
+                    });
             });
+
+            //?*****************************************Going button*****************************************//
+            //Subscribe to the click event of the button with a class js-toggle-follow
+            $(".js-toggle-follow").click(function (event) {
+                //Get the source of the event
+                var button = $(event.target);
+
+                //Ajax POST request:
+                $.post(
+                    //URL of the request
+                    "/api/followings/",
+                    //Data to be send in the request body
+                    { artistId: button.attr("data-artist-id") }
+                )
+                    //Promise of the Post request
+                    .done(function () {
+                        button.text("Followed");
+                    })
+                    .fail(function () {
+                        alert("Something failed :(")
+                    });
+
+            });
+
         });
     </script>
 }

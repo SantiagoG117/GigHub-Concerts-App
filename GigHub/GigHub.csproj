@@ -200,6 +200,7 @@
     <Compile Include="Controllers\GigsController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
+    <Compile Include="Dtos\FollowingDto.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -255,6 +256,7 @@
     <Compile Include="View Models\ForgotViewModel.cs" />
     <Compile Include="View Models\FutureDate.cs" />
     <Compile Include="View Models\GigFormViewModel.cs" />
+    <Compile Include="View Models\HomeViewModel.cs" />
     <Compile Include="View Models\LoginViewModel.cs" />
     <Compile Include="View Models\RegisterViewModel.cs" />
     <Compile Include="View Models\ResetPasswordViewModel.cs" />
