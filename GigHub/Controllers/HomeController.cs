@@ -34,13 +34,14 @@ namespace GigHub.Controllers
                 .Include(g => g.Genre)
                 .ToList();
 
-            var model = new HomeViewModel
+            var model = new GigsViewModel
             {
                 UpcomingGigs = upcomingGigs,
-                IsAuthenticatedUser = User.Identity.IsAuthenticated
+                IsAuthenticatedUser = User.Identity.IsAuthenticated,
+                Heading = "Gigs I am attending"
             };
             
-            return View(model);
+            return View("Gigs", model);
         }
 
         public ActionResult About()

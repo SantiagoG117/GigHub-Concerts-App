@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Web.Mvc;
 using GigHub.Models;
@@ -60,6 +62,37 @@ namespace GigHub.Controllers
             _context.SaveChanges();
 
             return RedirectToAction("Index", "Home");
+        }
+
+        /// <summary>
+        /// </summary>
+        /// <returns>A view with a list of the gigs the user will be attending. </returns>
+        [Authorize]
+        public ActionResult Attending()
+        {
+            //Get the id of the current user
+            var curUserId = User.Identity.GetUserId();
+
+            
+            //Get the list of all the Gigs the current user will attend 
+            var gigs = _context.Attendances
+                .Where(a => a.AttendeeId == curUserId)//Filter by the current User Id
+                .Select(a => a.Gig) //Select the gigs. At this point we get a collection of Gigs
+                .Include(g=> g.Artist) //Eager load the Artist of each Gig
+                .Include(g => g.Genre)//Eager load the Genre of each Gig
+                .ToList();
+
+            //Create the model
+            var model = new GigsViewModel
+            {
+                UpcomingGigs = gigs,
+                IsAuthenticatedUser = User.Identity.IsAuthenticated,
+                Heading = "Upcoming Gigs"
+            };
+
+            //Send the model to the view
+            return View("Gigs",model);
+
         }
     }
 }

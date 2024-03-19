@@ -256,7 +256,7 @@
     <Compile Include="View Models\ForgotViewModel.cs" />
     <Compile Include="View Models\FutureDate.cs" />
     <Compile Include="View Models\GigFormViewModel.cs" />
-    <Compile Include="View Models\HomeViewModel.cs" />
+    <Compile Include="View Models\GigsViewModel.cs" />
     <Compile Include="View Models\LoginViewModel.cs" />
     <Compile Include="View Models\RegisterViewModel.cs" />
     <Compile Include="View Models\ResetPasswordViewModel.cs" />
@@ -314,7 +314,7 @@
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Home\About.cshtml" />
     <Content Include="Views\Home\Contact.cshtml" />
-    <Content Include="Views\Home\Index.cshtml" />
+    <Content Include="Views\Shared\Gigs.cshtml" />
     <Content Include="Views\Account\_ExternalLoginsListPartial.cshtml" />
     <Content Include="Views\Account\ConfirmEmail.cshtml" />
     <Content Include="Views\Account\ExternalLoginConfirmation.cshtml" />

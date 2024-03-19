@@ -7,10 +7,11 @@ using GigHub.Models;
 
 namespace GigHub.View_Models
 {
-    public class HomeViewModel
+    public class GigsViewModel
     {
         public IList<Gig> UpcomingGigs { get; set; }
 
         public bool IsAuthenticatedUser { get; set; }
+        public string Heading { get; set; }
     }
 }

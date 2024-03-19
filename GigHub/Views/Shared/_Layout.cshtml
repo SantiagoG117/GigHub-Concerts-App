@@ -22,7 +22,7 @@
             <div class="collapse navbar-collapse d-sm-inline-flex justify-content-between">
                 <ul class="navbar-nav flex-grow-1 ">
                     <li>@Html.ActionLink("Create Gig", "Create", "Gigs", new { area = "" }, new { @class = "nav-link" })</li>
-                    <li>@Html.ActionLink("Gigs I'm going", "", "Gigs", new { area = "" }, new { @class = "nav-link" })</li>
+                    <li>@Html.ActionLink("Gigs I'm going", "Attending", "Gigs", new { area = "" }, new { @class = "nav-link" })</li>
                     <li>@Html.ActionLink("Artists I'm following", "", "Gigs", new { area = "" }, new { @class = "nav-link" })</li>
                 </ul>
                  @Html.Partial("_LoginPartial")
