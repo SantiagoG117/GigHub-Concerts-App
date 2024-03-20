@@ -194,9 +194,10 @@
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\AccountController.cs" />
-    <Compile Include="Controllers\FollowingsController.cs" />
+    <Compile Include="Controllers\Api\FollowingsController.cs" />
+    <Compile Include="Controllers\FollowingController.cs" />
     <Compile Include="Dtos\AttendanceDto.cs" />
-    <Compile Include="Controllers\AttendancesController.cs" />
+    <Compile Include="Controllers\Api\AttendancesController.cs" />
     <Compile Include="Controllers\GigsController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
@@ -252,6 +253,7 @@
     <Compile Include="Startup.cs" />
     <Compile Include="View Models\ExternalLoginConfirmationViewModel.cs" />
     <Compile Include="View Models\ExternalLoginListViewModel.cs" />
+    <Compile Include="View Models\FollowingViewModel.cs" />
     <Compile Include="View Models\ForgotPasswordViewModel.cs" />
     <Compile Include="View Models\ForgotViewModel.cs" />
     <Compile Include="View Models\FutureDate.cs" />
@@ -336,6 +338,7 @@
     <Content Include="Views\Shared\Lockout.cshtml" />
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
     <Content Include="Views\Gigs\Create.cshtml" />
+    <Content Include="Views\Following\Following.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
