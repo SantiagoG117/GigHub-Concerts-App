@@ -61,7 +61,7 @@ namespace GigHub.Controllers
             _context.Gigs.Add(gig);
             _context.SaveChanges();
 
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("MyGigs", "Gigs");
         }
 
         /// <summary>
@@ -93,6 +93,21 @@ namespace GigHub.Controllers
             //Send the model to the view
             return View("Gigs",model);
 
+        }
+
+        public ActionResult MyGigs()
+        {
+            //Get the current user if
+            var curUserId = User.Identity.GetUserId();
+
+            //Get the upcoming gigs from the current user
+            var gigs = _context.Gigs
+                .Where(g => g.ArtistId == curUserId && g.DateTime > DateTime.Now)
+                .Include(g => g.Genre)
+                .ToList();
+
+            //Send the gigs to the view
+            return View(gigs);
         }
     }
 }

@@ -6,7 +6,16 @@
     ViewBag.Title = "Home Page";
     
 }
-<h1>@Model.Heading</h1>
+
+@if (Model.IsAuthenticatedUser)
+{
+    <h1>@Model.Heading</h1>
+}
+else
+{
+    <h1>Upcoming Gigs</h1>
+}
+
 
 <ul class="gigs mt-4">
     @foreach (var gig in @Model.UpcomingGigs)

@@ -97,7 +97,7 @@ body {
 }
 
 .gigs > li > .date .day {
-    background: #f7f7f7;
+    background: #cccaca;
     color: #333;
     font-size: 20px;
     padding: 6px 12px;
@@ -114,8 +114,14 @@ body {
     display: block;
 }
 
+.gigs > li .details .venue {
+    font-weight: bold;
+    display:block    
+}
+
 .gigs > li .details .genre {
     font-size: 15px;
+    
     
 }
 
