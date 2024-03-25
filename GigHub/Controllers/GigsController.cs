@@ -21,7 +21,7 @@ namespace GigHub.Controllers
 
 
         [Authorize]
-        public ActionResult Create()
+        public ActionResult CreateGig()
         {
             
             //Create the model
@@ -31,7 +31,38 @@ namespace GigHub.Controllers
             };
 
             //Send the model to the view
-            return View(model);
+            return View("GigsForm", model);
+        }
+
+        public ActionResult EditGig(int id)
+        {
+            //Get the id of the user
+            var curUserId = User.Identity.GetUserId();
+
+            //Get the gig from the database
+            var gig = _context.Gigs.SingleOrDefault(g => g.Id == id && g.ArtistId == curUserId);
+
+            if (gig == null)
+            {
+                return HttpNotFound();
+            }
+
+            //Build the model
+            var model = new GigFormViewModel()
+            {
+                Id = gig.Id,
+                Venue = gig.Venue,
+                Date = gig.DateTime.ToString("d MMM yyyy"),
+                Time = gig.DateTime.ToString("HH:mm"),
+                GenreId = gig.GenreId,
+                Genres = _context.Genres.ToList()
+            };
+
+
+            //Send the model to the view
+
+            return View("GigsForm", model);
+
         }
 
         
@@ -40,25 +71,51 @@ namespace GigHub.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult SaveGig(GigFormViewModel model)
         {
+
             if (!ModelState.IsValid)
             {
                 model.Genres = _context.Genres.ToList();
                 
-                return View("Create", model);
+                return View("GigsForm", model);
 
             }
 
+            
 
-            //Save the Gig in the database
-            var gig = new Gig
+            //Update the gig in the database
+            if (model.Id != 0)
             {
-                ArtistId = User.Identity.GetUserId(),
-                DateTime = model.GetDateTime(),
-                GenreId = model.GenreId,
-                Venue = model.Venue
-            };
+                //Get the id of the current user
+                var curUserId = User.Identity.GetUserId();
 
-            _context.Gigs.Add(gig);
+                //Get the gig from id
+                var gigInDb = _context.Gigs.Single(g => g.Id == model.Id && g.ArtistId == curUserId);
+
+                //Update the gig to the values sent by the form
+                gigInDb.Venue = model.Venue;
+                gigInDb.DateTime = model.GetDateTime();
+                gigInDb.GenreId = model.GenreId;
+
+                
+            }
+            //Create a new gig
+            else
+            {
+                //Save the Gig in the database
+                var gig = new Gig
+                {
+                    ArtistId = User.Identity.GetUserId(),
+                    DateTime = model.GetDateTime(),
+                    GenreId = model.GenreId,
+                    Venue = model.Venue
+                };
+
+                _context.Gigs.Add(gig);
+            }
+
+            
+
+            //Save the changes
             _context.SaveChanges();
 
             return RedirectToAction("MyGigs", "Gigs");

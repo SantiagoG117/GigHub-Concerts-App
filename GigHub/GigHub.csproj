@@ -339,7 +339,7 @@
     <Content Include="Views\Manage\VerifyPhoneNumber.cshtml" />
     <Content Include="Views\Shared\Lockout.cshtml" />
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
-    <Content Include="Views\Gigs\Create.cshtml" />
+    <Content Include="Views\Gigs\GigsForm.cshtml" />
     <Content Include="Views\Following\Following.cshtml" />
     <Content Include="Views\Gigs\MyGigs.cshtml" />
   </ItemGroup>

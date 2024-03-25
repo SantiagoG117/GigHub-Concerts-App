@@ -12,6 +12,9 @@ namespace GigHub.View_Models
     /// </summary>
     public class GigFormViewModel
     {
+
+        public int Id { get; set; }
+
         [Required]
         public string Venue { get; set; }
 
@@ -24,13 +27,21 @@ namespace GigHub.View_Models
         public string Time { get; set; }
 
         [Required]
-        public int GenreId { get; set; } 
+        public int GenreId { get; set; }
 
 
         public IList<Genre> Genres { get; set; }
 
         public IList<Gig> Gigs { get; set; }
 
+
+        public string Title
+        {
+            get
+            {
+                return Id != 0 ? "Edit Gig" : "Create new Gig";
+            }
+        }
 
         //Public methods
         public DateTime GetDateTime()

@@ -26,6 +26,9 @@
                 <span class="genre">
                     @gig.Genre.Name
                 </span>
+                <div class="actions">
+                    @Html.ActionLink("Edit", "EditGig", "Gigs", new { id = @gig.Id}, null )
+                </div>
             </div>
         </li>
     }

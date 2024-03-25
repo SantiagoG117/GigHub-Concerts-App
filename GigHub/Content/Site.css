@@ -71,7 +71,7 @@ body {
     border-radius: 9px
 }
 
-/*Page-level styles for home page*/
+/********************************************* Styles for Gig page *******************************************************/
 .gigs {
     list-style: none;
 }
@@ -121,8 +121,16 @@ body {
 
 .gigs > li .details .genre {
     font-size: 15px;
-    
-    
+  
+}
+
+.gigs > li .details .actions {
+    font-size: 15px;
+    display: none;
+}
+
+.gigs > li:hover .details .actions {
+    display: block;
 }
 
 
