@@ -30,7 +30,7 @@ namespace GigHub.Controllers
             //Retrieve all upcoming gigs from the database
             var upcomingGigs = _context.Gigs
                 .Include(g => g.Artist)
-                .Where(g => g.DateTime > DateTime.Now) // Get gigs that only exist in the future
+                .Where(g => g.DateTime > DateTime.Now && !g.IsCanceled) // Get gigs that only exist in the future that haven't been canceled
                 .Include(g => g.Genre)
                 .ToList();
 

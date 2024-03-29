@@ -9,7 +9,7 @@ using Microsoft.AspNet.Identity;
 
 namespace GigHub.Controllers
 {
-    public class GigsController : Controller
+    public class GigController : Controller
     {
         //Create access to the Database
         private readonly ApplicationDbContext _context = new ApplicationDbContext();
@@ -77,7 +77,6 @@ namespace GigHub.Controllers
                 model.Genres = _context.Genres.ToList();
                 
                 return View("GigsForm", model);
-
             }
 
             
@@ -118,8 +117,26 @@ namespace GigHub.Controllers
             //Save the changes
             _context.SaveChanges();
 
-            return RedirectToAction("MyGigs", "Gigs");
+
+            return RedirectToAction("MyGigs", "Gig");
         }
+
+        public ActionResult DeleteGig(int id)
+        {
+            //Get the id of the current user
+            var curArtistId = User.Identity.GetUserId();
+
+            //Get the gig we wish to cancel
+            var gig = _context.Gigs.Single(g => g.Id ==id && g.ArtistId == curArtistId);
+
+            //Set its cancel parameter to true
+            gig.IsCanceled = true;
+            _context.SaveChanges();
+
+
+            return RedirectToAction("MyGigs", "Gig");
+        }
+
 
         /// <summary>
         /// </summary>
@@ -144,7 +161,7 @@ namespace GigHub.Controllers
             {
                 UpcomingGigs = gigs,
                 IsAuthenticatedUser = User.Identity.IsAuthenticated,
-                Heading = "Upcoming Gigs"
+                Heading = "Gigs I'm attending"
             };
 
             //Send the model to the view
@@ -154,13 +171,15 @@ namespace GigHub.Controllers
 
         public ActionResult MyGigs()
         {
-            //Get the current user if
+            //Get the current user id
             var curUserId = User.Identity.GetUserId();
 
             //Get the upcoming gigs from the current user
             var gigs = _context.Gigs
-                .Where(g => g.ArtistId == curUserId && g.DateTime > DateTime.Now)
-                .Include(g => g.Genre)
+                .Where(g => g.ArtistId == curUserId //Gigs of the artist
+                            && g.DateTime > DateTime.Now // that will happen in the future
+                            && !g.IsCanceled) // and are not cancelled 
+                .Include(g => g.Genre)// Eager load the Genres
                 .ToList();
 
             //Send the gigs to the view

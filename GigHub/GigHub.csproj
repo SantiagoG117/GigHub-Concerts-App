@@ -195,10 +195,11 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\Api\FollowingsController.cs" />
+    <Compile Include="Controllers\Api\GigsController.cs" />
     <Compile Include="Controllers\FollowingController.cs" />
     <Compile Include="Dtos\AttendanceDto.cs" />
     <Compile Include="Controllers\Api\AttendancesController.cs" />
-    <Compile Include="Controllers\GigsController.cs" />
+    <Compile Include="Controllers\GigController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Dtos\FollowingDto.cs" />
@@ -240,6 +241,10 @@
     <Compile Include="Migrations\202403142237432_AddFollwingsTable.cs" />
     <Compile Include="Migrations\202403142237432_AddFollwingsTable.Designer.cs">
       <DependentUpon>202403142237432_AddFollwingsTable.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202403252322490_addIsCanceledToGig.cs" />
+    <Compile Include="Migrations\202403252322490_addIsCanceledToGig.Designer.cs">
+      <DependentUpon>202403252322490_addIsCanceledToGig.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\ApplicationDbContext.cs" />
@@ -286,6 +291,7 @@
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="Scripts\bootbox.min.js" />
     <Content Include="Scripts\bootstrap.bundle.js" />
     <Content Include="Scripts\bootstrap.bundle.min.js" />
     <Content Include="Scripts\bootstrap.esm.js" />
@@ -339,9 +345,9 @@
     <Content Include="Views\Manage\VerifyPhoneNumber.cshtml" />
     <Content Include="Views\Shared\Lockout.cshtml" />
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
-    <Content Include="Views\Gigs\GigsForm.cshtml" />
+    <Content Include="Views\Gig\GigsForm.cshtml" />
     <Content Include="Views\Following\Following.cshtml" />
-    <Content Include="Views\Gigs\MyGigs.cshtml" />
+    <Content Include="Views\Gig\MyGigs.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -400,6 +406,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202403142237432_AddFollwingsTable.resx">
       <DependentUpon>202403142237432_AddFollwingsTable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202403252322490_addIsCanceledToGig.resx">
+      <DependentUpon>202403252322490_addIsCanceledToGig.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

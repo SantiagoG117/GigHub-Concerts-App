@@ -1,0 +1,90 @@
+﻿@using GigHub.Controllers
+@model IList<GigHub.Models.Gig>
+@{
+    ViewBag.Title = "MyGigs";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>MyGigs</h2>
+
+<ul class="gigs mt-4">
+    @foreach (var gig in @Model)
+    {
+        <li>
+
+            <div class="date">
+                <div class="month">
+                    @gig.DateTime.ToString("MMM")
+                </div>
+                <div class="day">
+                    @gig.DateTime.ToString("d ")
+                </div>
+            </div>
+            <div class="details d-flex flex-column">
+                <span class="venue">
+                    @gig.Venue
+                </span>
+                <span class="genre">
+                    @gig.Genre.Name
+                </span>
+                <div class="actions">
+                    <a href="@Url.Action("EditGig", "Gig", new { id = @gig.Id })">
+                        Edit
+                    </a> |
+                   
+                    <a href="@Url.Action("DeleteGig", "Gig", new { Id = @gig.Id })" class="js-cancel-gig">
+                        Cancel
+                    </a>
+                </div>
+            </div>
+        </li>
+    }
+</ul>
+
+
+
+@section scripts{
+    <script>
+        
+        $(document).ready(function () {
+            //Subscribe to the click event of the button with a class equals to js-cancel-gig
+            $(".js-cancel-gig").click(function (event) {
+                //Get the source of the event
+                var cancelLink = $(event.target);
+
+                bootbox.dialog({
+                    title: 'Confirm',
+                    message: "<p>Are you sure you wish to cancel this Gig?</p> ",
+                    //size: 'large',
+                    buttons:
+                    {
+                        no:
+                        {
+                            label: "No",
+                            className: 'btn-default',
+                            callback: function () {
+                                //Close the dialog box:
+                                bootbox.hideAll();
+                            }
+                        },
+                        yes:
+                        {
+                            label: "I don't close the modal!",
+                            className: 'btn-warning',
+                            callback: function () {
+                                cancelLink.parents("li") //Get the <li> that represents the gig in the web page
+                                    .fadeOut(function () {
+                                        //Remove the <li> holding the gig from the DOM
+                                        $(this).remove();
+                                    });
+                            }
+                        },
+                    }
+                });             
+            });
+        })
+
+    </script>
+
+}
+

@@ -25,17 +25,14 @@ namespace GigHub.Controllers
             _context.Dispose();
         }
 
+
         /// <summary>
-        /// Responds to api/Attendances/attend
+        /// Responds to api/Attendances/
         /// </summary>
-        /// <param name="gigId">
-        ///     ASP.NET API doesn't check for scalar parameter like integers in
-        ///     the request body. It expects them to be in the URL. FromBody parameter
-        ///     allows that.
-        /// </param>
+        /// <param name="dto"></param>
         /// <returns></returns>
         [HttpPost]
-        public IHttpActionResult Attend(AttendanceDto dto) //AttendanceDto attendanceDto
+        public IHttpActionResult Attend(AttendanceDto dto) 
         {
             //Returns the ID of the current user
             var userId = User.Identity.GetUserId(); 

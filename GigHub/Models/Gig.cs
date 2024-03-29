@@ -11,13 +11,14 @@ namespace GigHub.Models
     {
         public int Id { get; set; }
 
+        public bool IsCanceled { get; set; }
+
         //Navigation property to the ApplicationUser table
         public ApplicationUser Artist { get; set; }
 
         [Required]
         public string ArtistId { get; set; }// Foreign Key: ID's in  ApplicationUser class are string.
 
-        
         public DateTime DateTime { get; set; }
 
         [Required]
