@@ -1,8 +1,10 @@
-﻿using System;
+﻿using GigHub.View_Models;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Net.Mail;
 using System.Web;
 using System.Web.Profile;
 
@@ -35,7 +37,7 @@ namespace GigHub.Models
         [Required]
         public int GenreId { get; set; } //Foreign Key
 
-        public ICollection<Attendance> Attendances { get; private set; }
+        public ICollection<Attendance> Attendances { get; private set; } //Holds all the attendances on the given Gig
 
         //Constructor
         public Gig()
@@ -50,11 +52,30 @@ namespace GigHub.Models
             IsCanceled = true;
 
             //Set the notification
-            var notification = new Notification(NotificationType.GigCanceled, this);
+            var notification = Notification.GigCancelled(this);
 
             //Create a notification object for each attendee of the canceled Gig
             foreach (var attendee in Attendances.Select(a => a.Attendee))
                 attendee.Notify(notification);
+        }
+
+        public void Update(GigFormViewModel model)
+        {
+
+            //Set the notification
+            var notification = Notification.GigUpdated(this, DateTime, Venue);
+           
+
+            //Update the gig in the Database to the values send by the model
+            Venue = model.Venue;
+            DateTime = model.GetDateTime();
+            GenreId = model.GenreId;
+
+            //Create a notification for each attendee of the updated Gig
+            foreach (var attendee in Attendances.Select(a => a.Attendee))
+                attendee.Notify(notification);
+            
+
         }
     }
 }

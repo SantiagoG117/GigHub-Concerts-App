@@ -88,14 +88,13 @@ namespace GigHub.Controllers
                 //Get the id of the current user
                 var curUserId = User.Identity.GetUserId();
 
-                //Get the gig from id
-                var gigInDb = _context.Gigs.Single(g => g.Id == model.Id && g.ArtistId == curUserId);
+                //Get the Gig we wish to update and the users attending to that Gig
+                var gigInDb = _context.Gigs.
+                    Include(g => g.Attendances.Select(a => a.Attendee)). //Eager load the attendees for the given Gig
+                    Single(g => g.Id == model.Id && g.ArtistId == curUserId);
 
-                //Update the gig to the values sent by the form
-                gigInDb.Venue = model.Venue;
-                gigInDb.DateTime = model.GetDateTime();
-                gigInDb.GenreId = model.GenreId;
-               
+                //Update the Gig and notify the attendees
+                gigInDb.Update(model);
 
 
             }
@@ -130,7 +129,7 @@ namespace GigHub.Controllers
 
             //Get the gig we wish to cancel and the users attending to that gig
             var gig = _context.Gigs.
-                Include(g => g.Attendances.Select(a => a.Attendee)). //Eager load the attendees of the Gig
+                Include(g => g.Attendances.Select(a => a.Attendee)). //Eager load the attendees for the given Gig
                 Single(g => g.Id ==id && g.ArtistId == curArtistId);
 
             //If the gig is already cancelled return not Found
