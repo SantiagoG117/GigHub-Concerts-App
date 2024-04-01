@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data.Entity;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
@@ -94,8 +95,9 @@ namespace GigHub.Controllers
                 gigInDb.Venue = model.Venue;
                 gigInDb.DateTime = model.GetDateTime();
                 gigInDb.GenreId = model.GenreId;
+               
 
-                
+
             }
             //Create a new gig
             else
@@ -123,17 +125,24 @@ namespace GigHub.Controllers
 
         public ActionResult DeleteGig(int id)
         {
-            //Get the id of the current user
+            //Get the id of the current Artist
             var curArtistId = User.Identity.GetUserId();
 
-            //Get the gig we wish to cancel
-            var gig = _context.Gigs.Single(g => g.Id ==id && g.ArtistId == curArtistId);
+            //Get the gig we wish to cancel and the users attending to that gig
+            var gig = _context.Gigs.
+                Include(g => g.Attendances.Select(a => a.Attendee)). //Eager load the attendees of the Gig
+                Single(g => g.Id ==id && g.ArtistId == curArtistId);
 
-            //Set its cancel parameter to true
-            gig.IsCanceled = true;
+            //If the gig is already cancelled return not Found
+            if (gig.IsCanceled)
+                return HttpNotFound();
+
+            //Cancel the gig and notify the attendees 
+            gig.Cancel();
+
             _context.SaveChanges();
 
-
+            
             return RedirectToAction("MyGigs", "Gig");
         }
 

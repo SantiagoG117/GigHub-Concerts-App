@@ -25,19 +25,6 @@ namespace GigHub.Controllers
             _context.Dispose();
         }
 
-        [HttpDelete]
-        public IHttpActionResult Cancel(int id)
-        {
-            var curUserId = User.Identity.GetUserId();
-            //Get the Gig we wish to cancel
-            var gig = _context.Gigs.Single(g => g.Id == id && g.ArtistId == curUserId);
-
-            //Set its canceled parameter to true
-            gig.IsCanceled = true;
-            _context.SaveChanges();
-
-            return Ok();
-
-        }
+       
     }
 }

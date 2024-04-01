@@ -12,19 +12,24 @@ namespace GigHub.Models
     // You can add profile data for the user by adding more properties to your ApplicationUser class, please visit https://go.microsoft.com/fwlink/?LinkID=317594 to learn more.
     public class ApplicationUser : IdentityUser
     {
-        // Properties
+        // Not-nullable Properties
         [Required]
         [StringLength(100)]
         public string Name { get; set; }
 
+        //Navigation Properties
         public ICollection<Following> Followers { get; set; }
         public ICollection<Following> Artists { get; set; }
+        public ICollection<UserNotification> UserNotifications { get; set; } //Help entity Framework to store a new record in the UserNotifications table
+
+        
 
         //Constructor
         public ApplicationUser()
         {
             Followers = new Collection<Following>();
             Artists = new Collection<Following>();
+            UserNotifications = new Collection<UserNotification>();
         }
 
         public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<ApplicationUser> manager)
@@ -33,6 +38,15 @@ namespace GigHub.Models
             var userIdentity = await manager.CreateIdentityAsync(this, DefaultAuthenticationTypes.ApplicationCookie);
             // Add custom user claims here
             return userIdentity;
+        }
+
+        //Methods
+        public void Notify(Notification notification)
+        {
+
+            //Add the user's notification to the database
+            UserNotifications.Add(new UserNotification(this, notification));
+            
         }
     }
 }
