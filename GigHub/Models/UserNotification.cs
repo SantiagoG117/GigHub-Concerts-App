@@ -26,11 +26,7 @@ namespace GigHub.Models
         public ApplicationUser User { get; private set; }
         public Notification Notification { get; private set; }
 
-        //Default constructor (Required for Entity Framework):
-        protected UserNotification()
-        {
-            
-        }
+        
 
         /*
          * Custom constructor: Ensures that a UserNotification object is never created with Null values for the User and
@@ -51,5 +47,8 @@ namespace GigHub.Models
             User = user;
             Notification = notification;
         }
+
+        //Default constructor (Required for Entity Framework):
+        protected UserNotification() {}
     }
 }
