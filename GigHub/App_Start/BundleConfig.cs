@@ -20,14 +20,16 @@ namespace GigHub
                         "~/Scripts/modernizr-*"));
 
             bundles.Add(new Bundle("~/bundles/bootstrap").Include(
-                        "~/Scripts/bootstrap.js",
+                        "~/Scripts/popper.min.js",
                         "~/Scripts/bootstrap.min.js",
                         "~/Scripts/bootbox.min.js"
                         ));
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
                       "~/Content/bootstrap.css",
-                      "~/Content/site.css"));
+                      "~/Content/site.css",
+                      "~/Content/animate.css",
+                      "~/Content/bounceInDown.css"));
         }
     }
 }

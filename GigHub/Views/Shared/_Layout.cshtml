@@ -7,6 +7,12 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+   
+
+
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
 
@@ -26,8 +32,8 @@
                     <li>@Html.ActionLink("Gigs I'm going", "Attending", "Gig", new { area = "" }, new { @class = "nav-link" })</li>
                     <li>@Html.ActionLink("Artists I'm following", "Following", "Following", new { area = "" }, new { @class = "nav-link" })</li>
                     <li>@Html.ActionLink("My Upcoming Gigs", "MyGigs", "Gig", new { area = "" }, new { @class = "nav-link" })</li>
-                
-                    </ul>
+                    
+                </ul>
                  @Html.Partial("_LoginPartial")
             </div>
         </div>
@@ -43,5 +49,30 @@
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
     @RenderSection("scripts", required: false)
+    <script>
+        $(document).ready(function () {
+
+            //Initialize popovers
+            const popoverTriggerList = document.querySelectorAll('[data-bs-toggle="popover"]')
+            const popoverList = [...popoverTriggerList].map(popoverTriggerEl => new bootstrap.Popover(popoverTriggerEl))
+
+            //notifications is the notifications returned from the server by the call back function
+            $.getJSON("/api/notifications", function (notifications) {
+                $("#js-notifications-count")
+                    .text(notifications.length)
+                    .addClass("animate__animated animate__bounceInDown");
+            });
+
+            $("#js-notifications-count").popover({
+                html: true,
+                title: "Notifications",
+                //Displays the details of the notifications
+                content: function () {
+                    return "Hello Cruel World :)";
+                },
+                placement: "bottom"
+            });
+        });
+    </script>
 </body>
 </html>
