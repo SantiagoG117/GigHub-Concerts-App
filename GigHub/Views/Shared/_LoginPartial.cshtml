@@ -5,18 +5,28 @@
     {
         @Html.AntiForgeryToken()
         <ul class="navbar-nav navbar-right">
-            <li class="position-relative">
+            <li class="position-relative" id="notificationLogo">
                 <a href="#" class="nav-link">
                     <i class="bi bi-bell text-white" data-bs-toggle="popover"></i>
-                    <span class="position-absolute top-2 start-2 translate-middle badge rounded-pill bg-danger" id="js-notifications-count">
+                    <span class="badge rounded-pill bg-danger" id="js-notifications-count">
 
                     </span>
                 </a>
             </li>
-            <li>
-                @Html.ActionLink("Hello " + User.Identity.GetUserName() + "!", "Index", "Manage", routeValues: null, htmlAttributes: new { title = "Manage", @class = "nav-link" })
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    @User.Identity.GetUserName()
+                </a>
+                <ul class="dropdown-menu">
+                    <li>@Html.ActionLink("Gigs I'm going", "Attending", "Gig", new { area = "" }, new { @class = "dropdown-item" })</li>
+                    <li>@Html.ActionLink("Artists I'm following", "Following", "Following", new { area = "" }, new { @class = "dropdown-item" })</li>
+                    <li>@Html.ActionLink("My Upcoming Gigs", "MyGigs", "Gig", new { area = "" }, new { @class = "dropdown-item" })</li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class=" dropdown-item" href="javascript:document.getElementById('logoutForm').submit()">Log off</a></li>
+                </ul>
             </li>
-            <li><a class="nav-link" href="javascript:document.getElementById('logoutForm').submit()">Log off</a></li>
+            
+
         </ul>
     }
 }

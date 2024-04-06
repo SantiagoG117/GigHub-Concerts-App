@@ -29,10 +29,7 @@
             <div class="collapse navbar-collapse d-sm-inline-flex justify-content-between">
                 <ul class="navbar-nav flex-grow-1 ">
                     <li>@Html.ActionLink("Create Gig", "CreateGig", "Gig", new { area = "" }, new { @class = "nav-link" })</li>
-                    <li>@Html.ActionLink("Gigs I'm going", "Attending", "Gig", new { area = "" }, new { @class = "nav-link" })</li>
-                    <li>@Html.ActionLink("Artists I'm following", "Following", "Following", new { area = "" }, new { @class = "nav-link" })</li>
-                    <li>@Html.ActionLink("My Upcoming Gigs", "MyGigs", "Gig", new { area = "" }, new { @class = "nav-link" })</li>
-                    
+
                 </ul>
                  @Html.Partial("_LoginPartial")
             </div>
@@ -63,7 +60,10 @@
                     .addClass("animate__animated animate__bounceInDown");
             });
 
-            $("#js-notifications-count").popover({
+            
+
+
+            $("#notificationLogo").popover({
                 html: true,
                 title: "Notifications",
                 //Displays the details of the notifications

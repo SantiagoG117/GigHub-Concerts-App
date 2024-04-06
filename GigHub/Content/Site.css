@@ -39,14 +39,23 @@ body {
     background-color: #ff4342 !important;
 }
 
+
 .nav-link {
     
     color: #fff;
-    
 }
+
 
 .navbar-brand {
     font-weight: 700;
+}
+
+
+#js-notifications-count {
+    position: absolute;
+    top: -4px;
+    right:-1px;
+    
 }
 
 
