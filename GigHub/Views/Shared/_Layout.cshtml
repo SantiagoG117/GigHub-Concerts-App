@@ -108,26 +108,28 @@
 
                     },
                     placement: "bottom"
-                });
+                }).on('shown.bs.popover', function () {
+                    // Mark the notifications as read when they are open
+                    //AJAX post request to the API endpoint
+                    $.post(
+                        //URL of the request
+                        "/api/notifications/markAsRead"
+                    )
+                        .done(function () {
+                            //Get the badge icon
+                            $("#js-notifications-count")
+                                //Clear the number of new notifications and make it disappear
+                                .text("")
+                                .addClass("hide");
+                        })
+                        .fail(function () {
+                            console.log("Unsuccess :(")
+                        })
+                    
+                    console.log("Notifications are still being shown")
+                })
+                    ;
             });
-
-
-
-
-            @*$("#notificationLogo").popover({
-                html: true,
-                title: "Notifications",
-                //Displays the details of the notifications
-                content: function () {
-                    //Get the html markup of the notifications-template script
-                    var compiled = _.template($("#notifications-template").html());
-                    //Render the html markup and save it as a string
-                    var html = compiled({ notifications:  });
-
-                    return html;
-                },
-                placement: "bottom"
-            });*@
         });
     </script>
 </body>

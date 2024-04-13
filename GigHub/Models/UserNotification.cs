@@ -20,7 +20,7 @@ namespace GigHub.Models
         public int NotificationId { get; private set; }
 
         //Not-Nullable properties
-        public bool IsRead { get; set; }
+        public bool IsRead { get; private set; }
 
         //Navigation properties (Shouldn't change after they are created, hence the private setters)
         public ApplicationUser User { get; private set; }
@@ -50,5 +50,15 @@ namespace GigHub.Models
 
         //Default constructor (Required for Entity Framework):
         protected UserNotification() {}
+
+
+        /*
+         * Behavior reach domain model. The controller's responsibility is to just
+         * delegate actions. All behavior related to a domain should be encapsulated in the Model
+         */
+        public void Read()
+        {
+            IsRead = true;
+        }
     }
 }

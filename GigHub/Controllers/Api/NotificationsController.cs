@@ -29,14 +29,39 @@ namespace GigHub.Controllers.Api
 
             //Get the unread User Notifications for the current user
             var notifications = _context.UserNotifications.
-                Where(un => un.UserId == curUserId && !un.IsRead).
+                Where(un => un.UserId == curUserId ).//Get the unread user notifications for the current user
                 Select(un => un.Notification). //Select the Notification objects
                 Include(n => n.Gig.Artist). //Eager load the Gig and Artist of each notification
                 ToList();
 
-
             return notifications.Select(Mapper.Map<Notification, NotificationDto>);
 
+        }
+
+        /// <summary>
+        /// Mark the new notifications for the currently logged-in user as read.
+        /// </summary>
+        [HttpPost]
+        public IHttpActionResult MarkAsRead()
+        {
+            //Get the user ID
+            var curUserId = User.Identity.GetUserId();
+
+            //Get the unread User Notifications for the current user
+            var notifications = _context.UserNotifications
+                .Where(un => un.UserId == curUserId && !un.IsRead)
+                .ToList();
+
+            /*
+             * Set the notifications as read: Behavior reach domain model. The controller's responsibility is to just
+             * delegate actions. All behavior related to a domain should be encapsulated in the Model
+             */
+
+            notifications.ForEach(n => n.Read());
+
+            _context.SaveChanges();
+
+            return Ok();
         }
     }
 }
