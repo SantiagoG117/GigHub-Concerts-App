@@ -86,15 +86,30 @@
             const popoverTriggerList = document.querySelectorAll('[data-bs-toggle="popover"]')
             const popoverList = [...popoverTriggerList].map(popoverTriggerEl => new bootstrap.Popover(popoverTriggerEl))
 
-            //notifications is the notifications returned from the server by the call back function
+            //?Display the number of unread notifications in the badge:
+            $.getJSON("/api/userNotifications", function (numberOfUnreadNotifications) {
+
+                if (numberOfUnreadNotifications > 0)
+                {
+                    //Show the number of unread user notifications
+                    $("#js-notifications-count")
+                        .text(numberOfUnreadNotifications)
+                        .addClass("animate__animated animate__bounceInDown");
+                } else {
+                    //Get the badge icon
+                    $("#js-notifications-count")
+                        //Clear the number of new notifications and make it disappear
+                        .text("")
+                        .addClass("hide");
+                }
+                
+            });
+
+            //?Display the notification details:
             $.getJSON("/api/notifications", function (notifications) {
                 //If there are no notifications for the current user (Notifications array is empty) don't display notifications badge
                 if (notifications.length == 0)
                     return;
-
-                $("#js-notifications-count")
-                    .text(notifications.length)
-                    .addClass("animate__animated animate__bounceInDown");
 
                 $("#notificationLogo").popover({
                     html: true,
@@ -125,10 +140,10 @@
                         .fail(function () {
                             console.log("Unsuccess :(")
                         })
+
+
+                });
                     
-                    console.log("Notifications are still being shown")
-                })
-                    ;
             });
         });
     </script>

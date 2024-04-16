@@ -22,12 +22,12 @@ namespace GigHub.Controllers.Api
             _context = new ApplicationDbContext();
         }
 
-        
+        [HttpGet]
         public IEnumerable<NotificationDto> GetNewNotifications()
         {
             var curUserId = User.Identity.GetUserId();
 
-            //Get the unread User Notifications for the current user
+            //Get the unread Notifications for the current user
             var notifications = _context.UserNotifications.
                 Where(un => un.UserId == curUserId ).//Get the unread user notifications for the current user
                 Select(un => un.Notification). //Select the Notification objects
@@ -37,6 +37,7 @@ namespace GigHub.Controllers.Api
             return notifications.Select(Mapper.Map<Notification, NotificationDto>);
 
         }
+
 
         /// <summary>
         /// Mark the new notifications for the currently logged-in user as read.
@@ -60,6 +61,7 @@ namespace GigHub.Controllers.Api
             notifications.ForEach(n => n.Read());
 
             _context.SaveChanges();
+
 
             return Ok();
         }
