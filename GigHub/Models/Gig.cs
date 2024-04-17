@@ -4,9 +4,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Net.Mail;
-using System.Web;
-using System.Web.Profile;
 
 namespace GigHub.Models
 {
@@ -16,7 +13,7 @@ namespace GigHub.Models
         public int Id { get; private set; }
 
 
-        public bool IsCanceled { get; private set; }
+        public bool IsCanceled { get; set; }
 
 
         //Navigation property to the ApplicationUser table

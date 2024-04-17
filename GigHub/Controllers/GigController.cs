@@ -193,5 +193,19 @@ namespace GigHub.Controllers
             //Send the gigs to the view
             return View(gigs);
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="viewModel"></param>
+        /// <returns> Sends a query string to the Index action in the Home controller </returns>
+        [HttpPost]
+        public ActionResult Search(GigsViewModel viewModel)
+        {
+            return RedirectToAction("Index", 
+                        "Home", 
+                        //Query string to be sent to the Index action:
+                        new { query = viewModel.SearchTerm});
+        }
     }
 }

@@ -52,29 +52,29 @@
             <%
             _.each(notifications, function(notification){
             if (notification.notificationType == 1) { %>
-                <li><span class="highlight"><%= notification.gig.artist.name %></span> has canceled the gig at <%= notification.gig.venue %> at <%= moment(notification.gig.dateTime).format("D MMM HH:mm") %>.</li>
+            <li><span class="highlight"><%= notification.gig.artist.name %></span> has canceled the gig at <%= notification.gig.venue %> at <%= moment(notification.gig.dateTime).format("D MMM HH:mm") %>.</li>
             <% }
 
             else if (notification.notificationType == 2) {
-                var changes = [],
-                originalValues = [],
-                newValues = [];
+            var changes = [],
+            originalValues = [],
+            newValues = [];
 
-                if (notification.originalVenue != notification.gig.venue) {
-                    changes.push('venue');
-                    originalValues.push(notification.originalVenue);
-                    newValues.push(notification.gig.venue);
-                }
+            if (notification.originalVenue != notification.gig.venue) {
+            changes.push('venue');
+            originalValues.push(notification.originalVenue);
+            newValues.push(notification.gig.venue);
+            }
 
-                if (notification.originalDaeDateTime != notification.dateTime) {
-                    changes.push('date/time');
-                    originalValues.push(moment(notification.originalDaeDateTime).format("D MMM HH:mm"));
-                    newValues.push(moment(notification.gig.dateTime).format("D MMM HH:mm"));
-                }
+            if (notification.originalDaeDateTime != notification.dateTime) {
+            changes.push('date/time');
+            originalValues.push(moment(notification.originalDaeDateTime).format("D MMM HH:mm"));
+            newValues.push(moment(notification.gig.dateTime).format("D MMM HH:mm"));
+            }
 
-                %>
-                <li> <span class="highlight"><%= notification.gig.artist.name %></span> has changed the <%= changes.join(' and ') %> of the gig from <%= originalValues.join(' / ') %> to <%= newValues.join('/') %></li>
-                <%
+            %>
+            <li> <span class="highlight"><%= notification.gig.artist.name %></span> has changed the <%= changes.join(' and ') %> of the gig from <%= originalValues.join(' / ') %> to <%= newValues.join('/') %></li>
+            <%
             }
             })
             %>
@@ -89,8 +89,7 @@
             //?Display the number of unread notifications in the badge:
             $.getJSON("/api/userNotifications", function (numberOfUnreadNotifications) {
 
-                if (numberOfUnreadNotifications > 0)
-                {
+                if (numberOfUnreadNotifications > 0) {
                     //Show the number of unread user notifications
                     $("#js-notifications-count")
                         .text(numberOfUnreadNotifications)
@@ -102,48 +101,55 @@
                         .text("")
                         .addClass("hide");
                 }
-                
+
             });
 
-            //?Display the notification details:
+            //?Display the notification details in the Popover:
             $.getJSON("/api/notifications", function (notifications) {
-                //If there are no notifications for the current user (Notifications array is empty) don't display notifications badge
-                if (notifications.length == 0)
-                    return;
+                //If there are no notifications for the current user (Notifications array is empty) Display a message
+                if (notifications.length == 0) {
+                    $("#notificationLogo").popover({
+                        html: true,
+                        title: "Notifications",
+                        //Displays the details of the notifications
+                        content: function () {
+                            return "<p>You have no notifications at the moment.</p>"
 
-                $("#notificationLogo").popover({
-                    html: true,
-                    title: "Notifications",
-                    //Displays the details of the notifications
-                    content: function () {
-                        //Get the html markup of the notifications-template script
-                        var compiled = _.template($("#notifications-template").html());
-                        //Get the values returned by the api
-                        return compiled({ notifications: notifications });
+                        },
+                        placement: "bottom"
+                    })
+                } else {
+                    $("#notificationLogo").popover({
+                        html: true,
+                        title: "Notifications",
+                        //Displays the details of the notifications
+                        content: function () {
+                            //Get the html markup of the notifications-template script
+                            var compiled = _.template($("#notifications-template").html());
+                            //Get the values returned by the api
+                            return compiled({ notifications: notifications });
 
-                    },
-                    placement: "bottom"
-                }).on('shown.bs.popover', function () {
-                    // Mark the notifications as read when they are open
-                    //AJAX post request to the API endpoint
-                    $.post(
-                        //URL of the request
-                        "/api/notifications/markAsRead"
-                    )
-                        .done(function () {
-                            //Get the badge icon
-                            $("#js-notifications-count")
-                                //Clear the number of new notifications and make it disappear
-                                .text("")
-                                .addClass("hide");
-                        })
-                        .fail(function () {
-                            console.log("Unsuccess :(")
-                        })
-
-
-                });
-                    
+                        },
+                        placement: "bottom"
+                    }).on('shown.bs.popover', function () {
+                        // Mark the notifications as read when they are open
+                        //AJAX post request to the API endpoint
+                        $.post(
+                            //URL of the request
+                            "/api/notifications/markAsRead"
+                        )
+                            .done(function () {
+                                //Get the badge icon
+                                $("#js-notifications-count")
+                                    //Clear the number of new notifications and make it disappear
+                                    .text("")
+                                    .addClass("hide");
+                            })
+                            .fail(function () {
+                                console.log("Unsuccess :(")
+                            })
+                    });
+                }
             });
         });
     </script>

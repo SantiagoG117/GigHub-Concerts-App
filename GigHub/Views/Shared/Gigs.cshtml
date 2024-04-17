@@ -16,7 +16,20 @@ else
     <h1>Upcoming Gigs</h1>
 }
 
+@using (Html.BeginForm("Search", "Gig"))
+{
 
+    <div class="form-group">
+        <div class="input-group">
+            @Html.TextBoxFor(m => m.SearchTerm, new { @class = "form-control" , placeholder = "Search"})
+            <span class="input-group-text">
+                <i class="bi bi-search"></i>
+            </span>
+        </div>
+    </div>
+
+  
+}
 <ul class="gigs mt-4">
     @foreach (var gig in @Model.UpcomingGigs)
     {

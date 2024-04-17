@@ -25,20 +25,33 @@ namespace GigHub.Controllers
 
         
 
-        public ActionResult Index()
+        public ActionResult Index(string query = null)
         {
-            //Retrieve all upcoming gigs from the database
+            //If there is no query retrieve all upcoming gigs from the database
             var upcomingGigs = _context.Gigs
                 .Include(g => g.Artist)
-                .Where(g => g.DateTime > DateTime.Now && !g.IsCanceled) // Get gigs that only exist in the future that haven't been canceled
                 .Include(g => g.Genre)
-                .ToList();
+                .Where(g => g.DateTime > DateTime.Now && !g.IsCanceled); // Get gigs that only exist in the future that haven't been canceled
+                
+                
+
+            //If there is a query string apply a filter to the search
+            if (!String.IsNullOrWhiteSpace(query))
+            {
+                upcomingGigs = upcomingGigs
+                    // Lookup by three attributes, Artist Name, Genre or Location (Venue)
+                    .Where(g =>
+                        g.Artist.Name.Contains(query) ||
+                        g.Genre.Name.Contains(query) ||
+                        g.Venue.Contains(query));
+            }
 
             var model = new GigsViewModel
             {
-                UpcomingGigs = upcomingGigs,
+                UpcomingGigs = upcomingGigs.ToList(),
                 IsAuthenticatedUser = User.Identity.IsAuthenticated,
-                Heading = "Upcoming Gigs"
+                Heading = "Upcoming Gigs",
+                SearchTerm = query
             };
             
             return View("Gigs", model);
