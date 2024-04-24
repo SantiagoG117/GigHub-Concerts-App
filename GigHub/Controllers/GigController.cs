@@ -7,6 +7,7 @@ using System.Web.Mvc;
 using GigHub.Models;
 using GigHub.View_Models;
 using Microsoft.AspNet.Identity;
+using Microsoft.Owin.Security.Facebook;
 
 namespace GigHub.Controllers
 {
@@ -95,7 +96,6 @@ namespace GigHub.Controllers
 
                 //Update the Gig and notify the attendees
                 gigInDb.Update(model);
-
 
             }
             //Create a new gig
@@ -206,6 +206,37 @@ namespace GigHub.Controllers
                         "Home", 
                         //Query string to be sent to the Index action:
                         new { query = viewModel.SearchTerm});
+        }
+
+
+        public ActionResult Details(int gigId)
+        {
+            //Get the current user
+            var curUser = User.Identity.GetUserId();
+
+            //Get the Gig and its Artist
+            var gig = _context.Gigs
+                    //Eager load the artist for the gig
+                    .Include(g => g.Artist)
+                    .SingleOrDefault(g => g.Id == gigId);
+
+            if (gig == null)
+                return HttpNotFound();
+
+            var artist = gig.Artist;
+
+            //Build the ViewModel
+            var viewModel = new GigDetailsViewModel()
+            {
+                Gig = gig,
+                ArtistName = artist.Name,
+                IsAuthenticatedUser = User.Identity.IsAuthenticated,
+                IsFollowingTheArtist = _context.Followings.Any(f => 
+                                                               f.FollowerId == curUser&&
+                                                               f.ArtistId == artist.Id)
+            };
+
+            return View("GigDetails", viewModel);
         }
     }
 }

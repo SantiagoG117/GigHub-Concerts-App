@@ -56,6 +56,28 @@ namespace GigHub.Controllers
 
         }
 
+        [HttpDelete]
+        public IHttpActionResult Unfollow(string Id)
+        {
+            //Get the User ID of the current user
+            var currentUserId = User.Identity.GetUserId();
 
+            //Verify if there is a record for the current user and the given artist
+            if (!_context.Followings.Any(f =>
+                    f.FollowerId == currentUserId && //Check for the user id
+                    f.ArtistId == Id)) //Check for the artist id
+                return BadRequest("The user is not following this artist");
+
+            var followingToBeRemoved = new Following()
+            {
+                FollowerId = currentUserId,
+                ArtistId = Id
+            };
+
+            _context.Followings.Remove(followingToBeRemoved);
+            _context.SaveChanges();
+
+            return Ok();
+        }
     }
 }

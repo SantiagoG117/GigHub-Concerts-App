@@ -7,6 +7,8 @@
     
 }
 
+
+
 @if (Model.IsAuthenticatedUser)
 {
     <h1>@Model.Heading</h1>
@@ -21,7 +23,7 @@ else
 
     <div class="form-group">
         <div class="input-group">
-            @Html.TextBoxFor(m => m.SearchTerm, new { @class = "form-control" , placeholder = "Search"})
+            @Html.TextBoxFor(m => m.SearchTerm, new { @class = "form-control" , placeholder = "Search by Artist, Genre or Location"})
             <span class="input-group-text">
                 <i class="bi bi-search"></i>
             </span>
@@ -45,8 +47,9 @@ else
             <div class="details">
                 @if (Model.IsAuthenticatedUser)
                 {
-                    <span class="artist">
-                        @gig.Artist.Name <button data-artist-id="@gig.ArtistId" id="followButton" class="btn btn-link btn-sm js-toggle-follow">Follow</button>
+                    <span class="artist ">
+                        @Html.ActionLink(gig.Artist.Name, "Details", "Gig", new { gigId = gig.Id }, new {@class = "text-decoration-none" })
+                        <button data-artist-id="@gig.ArtistId" id="followButton" class="btn btn-link btn-sm js-toggle-follow">Follow</button>
 
                         @if (gig.IsCanceled)
                         {
@@ -58,7 +61,8 @@ else
                 else
                 {
                     <span class="artist">
-                        @gig.Artist.Name
+                        @Html.ActionLink(gig.Artist.Name, "Details", "Gig", new { gigId = gig.Id }, new {@class = "text-decoration-none" })
+
 
                         @if (gig.IsCanceled)
                         {
