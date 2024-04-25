@@ -122,30 +122,6 @@ namespace GigHub.Controllers
             return RedirectToAction("MyGigs", "Gig");
         }
 
-        public ActionResult DeleteGig(int id)
-        {
-            //Get the id of the current Artist
-            var curArtistId = User.Identity.GetUserId();
-
-            //Get the gig we wish to cancel and the users attending to that gig
-            var gig = _context.Gigs.
-                Include(g => g.Attendances.Select(a => a.Attendee)). //Eager load the attendees for the given Gig
-                Single(g => g.Id ==id && g.ArtistId == curArtistId);
-
-            //If the gig is already cancelled return not Found
-            if (gig.IsCanceled)
-                return HttpNotFound();
-
-            //Cancel the gig and notify the attendees 
-            gig.Cancel();
-
-            _context.SaveChanges();
-
-            
-            return RedirectToAction("MyGigs", "Gig");
-        }
-
-
         /// <summary>
         /// </summary>
         /// <returns>A view with a list of the gigs the user will be attending. </returns>
