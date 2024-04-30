@@ -66,13 +66,14 @@ namespace GigHub.Controllers
             if (!_context.Followings.Any(f =>
                     f.FollowerId == currentUserId && //Check for the user id
                     f.ArtistId == id)) //Check for the artist id
-                return BadRequest("The user is not following this artist");
+                return BadRequest( "Value sent to the API " + id);
 
             var followingToBeRemoved = new Following()
             {
                 FollowerId = currentUserId,
                 ArtistId = id
             };
+
 
             _context.Followings.Remove(followingToBeRemoved);
             _context.SaveChanges();

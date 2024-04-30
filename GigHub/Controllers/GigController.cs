@@ -188,7 +188,7 @@ namespace GigHub.Controllers
         public ActionResult Details(int gigId)
         {
             //Get the current user
-            var curUser = User.Identity.GetUserId();
+            var curUserId = User.Identity.GetUserId();
 
             //Get the Gig and its Artist
             var gig = _context.Gigs
@@ -208,8 +208,11 @@ namespace GigHub.Controllers
                 ArtistName = artist.Name,
                 IsAuthenticatedUser = User.Identity.IsAuthenticated,
                 IsFollowingTheArtist = _context.Followings.Any(f => 
-                                                               f.FollowerId == curUser&&
-                                                               f.ArtistId == artist.Id)
+                                                               f.FollowerId == curUserId &&
+                                                               f.ArtistId == artist.Id),
+                IsAttending = _context.Attendances.Any(a => 
+                                                        a.AttendeeId == curUserId &&
+                                                        a.GigId == gig.Id)
             };
 
             return View("GigDetails", viewModel);
