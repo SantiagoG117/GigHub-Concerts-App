@@ -27,6 +27,8 @@ namespace GigHub.Controllers
 
         public ActionResult Index(string query = null)
         {
+            var curUserId = User.Identity.GetUserId();
+  
             //If there is no query retrieve all upcoming gigs from the database
             var upcomingGigs = _context.Gigs
                 .Include(g => g.Artist)
@@ -46,12 +48,26 @@ namespace GigHub.Controllers
                         g.Venue.Contains(query));
             }
 
+            //Get the future attendances for the current user
+            var attendances = _context.Attendances.
+                                                 Where(a => a.AttendeeId == curUserId && a.Gig.DateTime > DateTime.Now).
+                                                 ToList().
+                                                 /*
+                                                        A lookup is a data structure that allows us to quickly lookup attendance by a given key (in
+                                                        this case by gigId) because as we are rendering each gig we need to quickly look up if we have
+                                                        an attendance or not. 
+                                                        */
+                                                 ToLookup(a => a.GigId);
+
+            //Build the model
             var model = new GigsViewModel
             {
                 UpcomingGigs = upcomingGigs.ToList(),
                 IsAuthenticatedUser = User.Identity.IsAuthenticated,
                 Heading = "Upcoming Gigs",
-                SearchTerm = query
+                SearchTerm = query,
+                Attendances = attendances
+               
             };
             
             return View("Gigs", model);

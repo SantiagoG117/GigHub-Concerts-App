@@ -53,5 +53,25 @@ namespace GigHub.Controllers
 
             return Ok();
         }
+
+        [HttpDelete]
+        public IHttpActionResult CancelAttend(int id)
+        {
+            //Get the current user ID
+            var curUserId = User.Identity.GetUserId();
+
+            //Get the attendance we wish to remove
+            var attendance = _context.Attendances
+                .SingleOrDefault(a => a.AttendeeId == curUserId && a.GigId == id);
+
+            //Remove the attendance and save the changes
+            if (attendance == null)
+                return BadRequest("The attendance does not exist.");
+
+            _context.Attendances.Remove(attendance);
+            _context.SaveChanges();
+
+            return Ok();
+        }
     }
 }
