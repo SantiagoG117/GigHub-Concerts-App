@@ -29,7 +29,7 @@ else
         </div>
     </div>
 }
-<ul class="gigs mt-4">
+<ul id="gigs" class="gigs mt-4">
     @foreach (var gig in @Model.UpcomingGigs)
     {
         <li>
@@ -67,7 +67,7 @@ else
                                     data-gig-id="@gig.Id" 
                                     class="btn @(Model.Attendances.Contains(gig.Id) ? "btn-success" : "btn-secondary")  btn-sm js-toggle-attendance" 
                                     style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem;">
-                                        @(Model.Attendances.Contains(gig.Id) ? "Attending" : "Going?")
+                                        @(Model.Attendances.Contains(gig.Id) ? "Going" : "Going?")
                                 </button>
                             }
 
@@ -104,56 +104,7 @@ else
         //?Ready event of jQuery's document object: To be triggered when the document is ready
         $(document).ready(function () { 
 
-            //?*****************************************Going button*****************************************//
-            //Subscribe to the click event of the button with a class js-toggle-attendance
-            $(".js-toggle-attendance").click(function (event) { 
-                //From the event we can get its source
-                var button = $(event.target) 
-
-                //Check if the attendance does not exist (Button has the btn-seconday)
-                if (button.hasClass("btn-secondary")) {
-                    // AJAX POST request
-                    $.post(
-                        //URL of the request
-                        "/api/attendances",
-                        //Data to be sent in the request body 
-                        { gigId: button.attr("data-gig-id") }
-                    )
-                        //Promise of the post request
-                        .done(function () {
-                            button//Get the button
-                                .removeClass("btn-secondary") //Remove the class that indicates the user isn't attending
-                                .addClass("btn-success") //Add the class that indicates the user is attending
-                                .text("Attending");//Change the label
-                        })
-                        .fail(function () {
-                            alert("Something failed");
-                        });
-                }
-                //If the attendance already exist, delted
-                else {
-                    $.ajax({
-                        /*
-                            Add an ID that uniquely identify an attendance for the currently logged-in user.
-                            The keys for attendance are a combination of the User ID and the Gig ID, however we
-                            should't expose the UserID in the API, so we should only send the Gig ID. 
-                            */
-                        url: "/api/attendances/CancelAttend/?id=" + button.attr("data-gig-id"),
-                        method: "DELETE"
-                    })
-                        .done(function () {
-                            button //Get the button
-                                .removeClass("btn-success") 
-                                .addClass("btn-secondary")
-                                .text("Going?")
-                        })
-                        .fail(function () {
-                            alert("Something failed")
-                        })
-                }
-
-                
-            });
+            GigsController.init("#gigs");
 
             //?*****************************************Following button*****************************************//
             //Subscribe to the click event of the button with a class js-toggle-follow
