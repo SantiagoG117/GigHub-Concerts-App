@@ -211,17 +211,20 @@ namespace GigHub.Controllers
             if (gig == null)
                 return HttpNotFound();
 
-            var artist = gig.Artist;
+            //Get the followings of the current user
+            var followings = _context.Followings
+                .Where(f => f.FollowerId == curUserId)
+                .ToList()
+                .ToLookup(f => f.ArtistId);
+
 
             //Build the ViewModel
             var viewModel = new GigDetailsViewModel()
             {
                 Gig = gig,
-                ArtistName = artist.Name,
+                ArtistName = gig.Artist.Name,
                 IsAuthenticatedUser = User.Identity.IsAuthenticated,
-                IsFollowingTheArtist = _context.Followings.Any(f => 
-                                                               f.FollowerId == curUserId &&
-                                                               f.ArtistId == artist.Id),
+                Followings = followings,
                 IsAttending = _context.Attendances.Any(a => 
                                                         a.AttendeeId == curUserId &&
                                                         a.GigId == gig.Id)

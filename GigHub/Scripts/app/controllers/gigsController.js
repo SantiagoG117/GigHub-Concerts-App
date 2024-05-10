@@ -27,8 +27,6 @@ var GigsController = function (attendanceService) {
     var button;//Keeps track of the state of the Gigs view, so if a button is clicked, we can keep a reference to it
 
     //! Public methods:
-
-
     var init = function (container) //container is a selector that represents the container for all the gigs
     {
 
@@ -51,7 +49,7 @@ var GigsController = function (attendanceService) {
 
     //!Private methods:
     var toggleAttendance = function (event) {
-        //Set the value of the button attribute to the value of the event rised by toggleAttendance
+        //Store a reference of the button that raises the click event
         button = $(event.target);
 
         //Get the Gig ID
@@ -62,12 +60,13 @@ var GigsController = function (attendanceService) {
         else
             attendanceService.deleteAttendance(gigId, done, fail);
     }
+
     var done = function () {
 
         var text = (button.text() == "Going") ? "Going?" : "Going";
 
         /*
-            Swap the btn-info with the btn-default class. For this we use the toggle class.
+            To swap the btn-info with the btn-default class we use toggleClass
             The toggleClass method toggles between adding and removing class names for the selected element.
             In this example:
                 If the btn-info exist it will be removed, otherwise it will be added

@@ -59,26 +59,21 @@ namespace GigHub.Controllers
         [HttpDelete]
         public IHttpActionResult Unfollow(string id)
         {
-            //Get the User ID of the current user
-            var currentUserId = User.Identity.GetUserId();
+            //Get the user ID
+            var userId = User.Identity.GetUserId();
 
-            //Verify if there is a record for the current user and the given artist
-            if (!_context.Followings.Any(f =>
-                    f.FollowerId == currentUserId && //Check for the user id
-                    f.ArtistId == id)) //Check for the artist id
-                return BadRequest( "Value sent to the API " + id);
+            //Get the following under the user ID and the artist ID
+            var following = _context.Followings
+                .SingleOrDefault(f => f.FollowerId == userId && f.ArtistId == id);
 
-            var followingToBeRemoved = new Following()
-            {
-                FollowerId = currentUserId,
-                ArtistId = id
-            };
+            
+            if (following == null)
+                return NotFound();
 
-
-            _context.Followings.Remove(followingToBeRemoved);
+            _context.Followings.Remove(following);
             _context.SaveChanges();
 
-            return Ok();
+            return Ok(id);
         }
     }
 }

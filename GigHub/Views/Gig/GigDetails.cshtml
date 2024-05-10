@@ -3,38 +3,24 @@
 @{
     ViewBag.Title = "Gig's Details";
 }
-
-@*
-    1. Details of the Gig. Gigs/Details/GigId
-
-            For only logged-in users:
-                
-
-                c. If the currently logged-in user is going to the event, we should have a paragraph saying "You are going to this event"
-
-*@
-
-
-
 @if (Model.IsAuthenticatedUser)
 {
     <div class="d-flex flex-row">
         <h2>@Model.ArtistName</h2>
-        @if (Model.IsFollowingTheArtist)
-        {
-            <button class="btn btn-primary btn-sm m-2 js-toggle-unfollow">Following</button>
-        }
-        else
-        {
-            <button data-artist-id="@Model.Gig.ArtistId" id="followButton" class="btn btn-light btn-sm js-toggle-follow">Follow</button>   
-        }
-</div>
-    
+
+        <button data-artist-id="@Model.Gig.ArtistId"
+                class="btn @(Model.Followings.Contains(@Model.Gig.ArtistId) ? "btn-success" : "btn-primary") btn-sm m-2 js-toggle-follow">
+
+            @(Model.Followings.Contains(@Model.Gig.ArtistId) ? "Following" : "Follow")
+
+        </button>
+    </div>
+
     <span>
         <p>Performing at @Model.Gig.Venue on @Model.Gig.DateTime.ToString("d MMM") at @Model.Gig.DateTime.ToString("t") </p>
     </span>
 
-    if (@Model.IsAuthenticatedUser && @Model.IsAttending )
+    if (@Model.IsAuthenticatedUser && @Model.IsAttending)
     {
         <span>
             You are going to this event
@@ -54,28 +40,8 @@ else
 {
     <script>
         $(document).ready(function () {
-            //?*****************************************Following button*****************************************//
-            //Subscribe to the click event of the button with a class js-toggle-follow
-            $(".js-toggle-follow").click(function (event) {
-                //Get the source of the event
-                var button = $(event.target);
 
-                //Ajax POST request:
-                $.post(
-                    //URL of the request
-                    "/api/followings/",
-                    //Data to be send in the request body
-                    { artistId: button.attr("data-artist-id") }
-                )
-                    //Promise of the Post request
-                    .done(function () {
-                        button.text("Followed");
-                    })
-                    .fail(function () {
-                        alert("Something failed :(")
-                    });
-
-            });
+            GigsDetailsController.init();
         })
     </script>
 }

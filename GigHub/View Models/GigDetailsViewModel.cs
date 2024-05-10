@@ -12,8 +12,9 @@ namespace GigHub.View_Models
         public Gig Gig { get; set; }
         public string ArtistName { get; set; }
         public bool IsAuthenticatedUser { get; set; }
-        public bool IsFollowingTheArtist { get; set; }
         public bool IsAttending { get; set; }
+        public ILookup<string, Following> Followings { get; set; }
+
         
     }
 }

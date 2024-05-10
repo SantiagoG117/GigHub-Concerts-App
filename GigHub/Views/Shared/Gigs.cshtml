@@ -46,28 +46,23 @@ else
                 {
                     
                     <div class="row">
-                        <div class="col-2 p-0">
+                        <div class="col-1 p-0" style="width: 7%">
                             @Html.ActionLink(gig.Artist.Name, "Details", "Gig", new { gigId = gig.Id }, new { @class = "text-decoration-none" })
                         </div>
-                        <div class="col-1 p-0">
-                            <button data-artist-id="@gig.ArtistId" class="btn btn-primary btn-sm js-toggle-follow" style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem;" id="followButton">
-                                Follow
-                            </button>
+                        <div class="col-1  p-0">
+                            | @gig.Genre.Name
                         </div>
+
                     </div>
-                    <div class="row mt-1">
-                        <div class="col-2  p-0">
-                            @gig.Genre.Name
-                        </div>
+                    <div class="row">
                         <div class="col-1 p-0">
                             @if (Model.IsAuthenticatedUser && !gig.IsCanceled)
                             {
-                                
-                                <button 
-                                    data-gig-id="@gig.Id" 
-                                    class="btn @(Model.Attendances.Contains(gig.Id) ? "btn-success" : "btn-secondary")  btn-sm js-toggle-attendance" 
-                                    style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem;">
-                                        @(Model.Attendances.Contains(gig.Id) ? "Going" : "Going?")
+
+                                <button data-gig-id="@gig.Id"
+                                        class="btn @(Model.Attendances.Contains(gig.Id) ? "btn-success" : "btn-secondary")  btn-sm js-toggle-attendance"
+                                        style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem;">
+                                    @(Model.Attendances.Contains(gig.Id) ? "Going" : "Going?")
                                 </button>
                             }
 
@@ -106,28 +101,7 @@ else
 
             GigsController.init("#gigs");
 
-            //?*****************************************Following button*****************************************//
-            //Subscribe to the click event of the button with a class js-toggle-follow
-            $(".js-toggle-follow").click(function (event) {
-                //Get the source of the event
-                var button = $(event.target);
-
-                //Ajax POST request:
-                $.post(
-                    //URL of the request
-                    "/api/followings/",
-                    //Data to be send in the request body
-                    { artistId: button.attr("data-artist-id") }
-                )
-                    //Promise of the Post request
-                    .done(function () {
-                        button.text("Followed");
-                    })
-                    .fail(function () {
-                        alert("Something failed :(")
-                    });
-
-            });
+            
 
         });
     </script>

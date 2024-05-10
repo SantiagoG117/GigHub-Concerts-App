@@ -50,14 +50,14 @@ namespace GigHub.Controllers
 
             //Get the future attendances for the current user
             var attendances = _context.Attendances.
-                                                 Where(a => a.AttendeeId == curUserId && a.Gig.DateTime > DateTime.Now).
-                                                 ToList().
-                                                 /*
-                                                        A lookup is a data structure that allows us to quickly lookup attendance by a given key (in
-                                                        this case by gigId) because as we are rendering each gig we need to quickly look up if we have
-                                                        an attendance or not. 
-                                                        */
-                                                 ToLookup(a => a.GigId);
+                                     Where(a => a.AttendeeId == curUserId && a.Gig.DateTime > DateTime.Now).
+                                     ToList().
+                                     /*
+                                            A lookup is a data structure that allows us to quickly lookup attendance by a given key (in
+                                            this case by gigId) because as we are rendering each gig we need to quickly look up if we have
+                                            an attendance or not. 
+                                            */
+                                     ToLookup(a => a.GigId);
 
             //Build the model
             var model = new GigsViewModel
