@@ -5,7 +5,8 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
-using GigHub.Models;
+using GigHub.Core.Models;
+using GigHub.Persistance;
 using Microsoft.AspNet.Identity;
 
 namespace GigHub.Controllers.Api

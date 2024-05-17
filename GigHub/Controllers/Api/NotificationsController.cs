@@ -6,8 +6,9 @@ using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 using AutoMapper;
-using GigHub.Dtos;
-using GigHub.Models;
+using GigHub.Core.Dtos;
+using GigHub.Core.Models;
+using GigHub.Persistance;
 using Microsoft.AspNet.Identity;
 
 namespace GigHub.Controllers.Api

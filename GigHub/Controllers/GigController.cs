@@ -4,8 +4,10 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Web.Mvc;
-using GigHub.Models;
-using GigHub.View_Models;
+using GigHub.Core;
+using GigHub.Core.Models;
+using GigHub.Core.View_Models;
+using GigHub.Persistance;
 using Microsoft.AspNet.Identity;
 using Microsoft.Owin.Security.Facebook;
 
@@ -13,15 +15,21 @@ namespace GigHub.Controllers
 {
     public class GigController : Controller
     {
-        //Create access to the Database
-        private readonly ApplicationDbContext _context = new ApplicationDbContext();
+        //Create access to the Database repositories
+        private readonly IUnitOfWork _unitOfWork;
 
+        
+        public GigController()
+        {
+            //Grants access to the database and Repositories
+            _unitOfWork = new UnitOfWork(new ApplicationDbContext());
+        }
         protected override void Dispose(bool disposing)
         {
-            _context.Dispose();
+            new ApplicationDbContext().Dispose();
         }
 
-
+        //Public Actions
         [Authorize]
         public ActionResult CreateGig()
         {
@@ -29,7 +37,7 @@ namespace GigHub.Controllers
             //Create the model
             var model = new GigFormViewModel
             {
-                Genres = _context.Genres.ToList()
+                Genres = _unitOfWork.IRepoGenres.GetGenres()
             };
 
             //Send the model to the view
@@ -38,16 +46,16 @@ namespace GigHub.Controllers
 
         public ActionResult EditGig(int id)
         {
-            //Get the id of the user
-            var curUserId = User.Identity.GetUserId();
 
             //Get the gig from the database
-            var gig = _context.Gigs.SingleOrDefault(g => g.Id == id && g.ArtistId == curUserId);
+            var gig = _unitOfWork.IRepoGigs.GetGig(id); 
 
             if (gig == null)
-            {
                 return HttpNotFound();
-            }
+
+            //Make sure the gig belongs to the logged in artist
+            if (gig.ArtistId != GetLoggedInUserId())
+                return new HttpUnauthorizedResult();
 
             //Build the model
             var model = new GigFormViewModel()
@@ -57,7 +65,7 @@ namespace GigHub.Controllers
                 Date = gig.DateTime.ToString("d MMM yyyy"),
                 Time = gig.DateTime.ToString("HH:mm"),
                 GenreId = gig.GenreId,
-                Genres = _context.Genres.ToList()
+                Genres = _unitOfWork.IRepoGenres.GetGenres()
             };
 
 
@@ -67,7 +75,6 @@ namespace GigHub.Controllers
 
         }
 
-        
         [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -76,7 +83,7 @@ namespace GigHub.Controllers
 
             if (!ModelState.IsValid)
             {
-                model.Genres = _context.Genres.ToList();
+                model.Genres = _unitOfWork.IRepoGenres.GetGenres();
                 
                 return View("GigsForm", model);
             }
@@ -86,13 +93,15 @@ namespace GigHub.Controllers
             //Update the gig in the database
             if (model.Id != 0)
             {
-                //Get the id of the current user
-                var curUserId = User.Identity.GetUserId();
-
                 //Get the Gig we wish to update and the users attending to that Gig
-                var gigInDb = _context.Gigs.
-                    Include(g => g.Attendances.Select(a => a.Attendee)). //Eager load the attendees for the given Gig
-                    Single(g => g.Id == model.Id && g.ArtistId == curUserId);
+                var gigInDb = _unitOfWork.IRepoGigs.GetGigWithAttendees(model.Id);
+
+                if (gigInDb == null)
+                    return HttpNotFound();
+
+                //Make sure the gig belongs to the logged in artist
+                if (gigInDb.ArtistId != GetLoggedInUserId())
+                    return new HttpUnauthorizedResult();
 
                 //Update the Gig and notify the attendees
                 gigInDb.Update(model);
@@ -104,19 +113,19 @@ namespace GigHub.Controllers
                 //Save the Gig in the database
                 var gig = new Gig
                 {
-                    ArtistId = User.Identity.GetUserId(),
+                    ArtistId = GetLoggedInUserId(),
                     DateTime = model.GetDateTime(),
                     GenreId = model.GenreId,
                     Venue = model.Venue
                 };
 
-                _context.Gigs.Add(gig);
+                _unitOfWork.IRepoGigs.AddGig(gig);
             }
 
             
 
             //Save the changes
-            _context.SaveChanges();
+            _unitOfWork.Complete();
 
 
             return RedirectToAction("MyGigs", "Gig");
@@ -129,35 +138,20 @@ namespace GigHub.Controllers
         public ActionResult Attending()
         {
             //Get the id of the current user
-            var curUserId = User.Identity.GetUserId();
-
-            
-            //Get the list of all the Gigs the current user will attend 
-            var gigs = _context.Attendances
-                .Where(a => a.AttendeeId == curUserId)//Filter by the current User Id
-                .Select(a => a.Gig) //Select the gigs. At this point we get a collection of Gigs
-                .Include(g=> g.Artist) //Eager load the Artist of each Gig
-                .Include(g => g.Genre)//Eager load the Genre of each Gig
-                .ToList();
-
-            //Get the future attendances for the current user
-            var attendances = _context.Attendances.
-                Where(a => a.AttendeeId == curUserId && a.Gig.DateTime > DateTime.Now).
-                ToList().
-                /*
-                       A lookup is a data structure that allows us to quickly lookup attendance by a given key (in
-                       this case by gigId) because as we are rendering each gig we need to quickly look up if we have
-                       an attendance or not.
-                       */
-                ToLookup(a => a.GigId);
+            var curUserId = GetLoggedInUserId();
 
             //Create the model
             var model = new GigsViewModel
             {
-                UpcomingGigs = gigs,
+                UpcomingGigs = _unitOfWork.IRepoGigs.GetGigUserIsAttending(curUserId),
                 IsAuthenticatedUser = User.Identity.IsAuthenticated,
                 Heading = "Gigs I'm attending",
-                Attendances = attendances
+                /*
+                     A lookup is a data structure that allows us to quickly lookup attendance by a given key (in
+                     this case by gigId) because as we are rendering each gig we need to quickly look up if we have
+                     an attendance or not.
+                  */
+                Attendances = _unitOfWork.IRepoAttendance.GetFutureAttendances(curUserId).ToLookup(a => a.GigId)
             };
 
             //Send the model to the view
@@ -167,16 +161,11 @@ namespace GigHub.Controllers
 
         public ActionResult MyGigs()
         {
-            //Get the current user id
-            var curUserId = User.Identity.GetUserId();
+         
+            var curUserId = GetLoggedInUserId();
 
-            //Get the upcoming gigs from the current user
-            var gigs = _context.Gigs
-                .Where(g => g.ArtistId == curUserId //Gigs of the artist
-                            && g.DateTime > DateTime.Now // that will happen in the future
-                            && !g.IsCanceled) // and are not cancelled 
-                .Include(g => g.Genre)// Eager load the Genres
-                .ToList();
+         
+            var gigs = _unitOfWork.IRepoGigs.GetUpcomingGigsByArtist(curUserId);
 
             //Send the gigs to the view
             return View(gigs);
@@ -200,22 +189,18 @@ namespace GigHub.Controllers
         public ActionResult Details(int gigId)
         {
             //Get the current user
-            var curUserId = User.Identity.GetUserId();
+            var curUserId = GetLoggedInUserId();
 
             //Get the Gig and its Artist
-            var gig = _context.Gigs
-                    //Eager load the artist for the gig
-                    .Include(g => g.Artist)
-                    .SingleOrDefault(g => g.Id == gigId);
+            var gig = _unitOfWork.IRepoGigs.GetGigWithArtist(gigId);
 
             if (gig == null)
                 return HttpNotFound();
 
             //Get the followings of the current user
-            var followings = _context.Followings
-                .Where(f => f.FollowerId == curUserId)
-                .ToList()
-                .ToLookup(f => f.ArtistId);
+            var followings = _unitOfWork.IRepoFollowings
+                                                    .GetArtistsFollowed(curUserId)
+                                                    .ToLookup(f => f.ArtistId);
 
 
             //Build the ViewModel
@@ -225,12 +210,18 @@ namespace GigHub.Controllers
                 ArtistName = gig.Artist.Name,
                 IsAuthenticatedUser = User.Identity.IsAuthenticated,
                 Followings = followings,
-                IsAttending = _context.Attendances.Any(a => 
-                                                        a.AttendeeId == curUserId &&
-                                                        a.GigId == gig.Id)
+                IsAttending = _unitOfWork.IRepoAttendance.GetAttendance(curUserId, gigId) != null
             };
 
             return View("GigDetails", viewModel);
         }
+
+
+        //Private method:
+        private string GetLoggedInUserId()
+        {
+            return User.Identity.GetUserId();
+        }
+
     }
 }
