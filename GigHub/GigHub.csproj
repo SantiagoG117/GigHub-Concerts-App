@@ -293,6 +293,8 @@
     <Compile Include="Core\Models\NotificationType.cs" />
     <Compile Include="Core\Models\UserNotification.cs" />
     <Compile Include="Core\IUnitOfWork.cs" />
+    <Compile Include="Core\IRepositories\INotificationRepository.cs" />
+    <Compile Include="Persistance\Repositories\NotificationRepository.cs" />
     <Compile Include="Persistance\UnitOfWork.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Persistance\Repositories\AttendanceRepository.cs" />

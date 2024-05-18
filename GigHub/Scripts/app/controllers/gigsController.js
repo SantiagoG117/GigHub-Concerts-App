@@ -63,7 +63,7 @@ var GigsController = function (attendanceService) {
 
     var done = function () {
 
-        var text = (button.text() == "Going") ? "Going?" : "Going";
+        var text = (button.text() == "Going") ? "Going" : "Going?";
 
         /*
             To swap the btn-info with the btn-default class we use toggleClass

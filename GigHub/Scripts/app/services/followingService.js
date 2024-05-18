@@ -32,7 +32,7 @@ var FollowingService = function () {
             //Promise of the Post request
             .done(function () {
 
-                console.log("Done method reached");
+                
 
                 var text = (button.text() == "Following") ? "Follow" : "Following";
 
@@ -59,8 +59,7 @@ var FollowingService = function () {
         })
             .done(function () {
 
-                console.log("Done method reached");
-                console.log(button.text());
+            
 
                 var text = (button.text() == "Follow") ? "Following" : "Follow";
 

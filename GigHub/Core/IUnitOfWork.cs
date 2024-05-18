@@ -17,6 +17,8 @@ namespace GigHub.Core
         IGenresRepository IRepoGenres { get; }
         IFollowingsRepository IRepoFollowings { get; }
 
+        INotificationRepository IRepoNotification { get; }
+
         //Methods
         void Complete();
     }

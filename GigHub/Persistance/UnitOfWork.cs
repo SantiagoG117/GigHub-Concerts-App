@@ -28,17 +28,19 @@ namespace GigHub.Persistance
         public IGenresRepository IRepoGenres { get; private set; }
 
         public IFollowingsRepository IRepoFollowings { get; private set; }
-        
+
+        public INotificationRepository IRepoNotification { get; private set; }
 
 
         public UnitOfWork(ApplicationDbContext context)
         {
             _context = context;
-            //Initialize the Repositories
+            //Initialize the Repositories using the access to the database system
             IRepoGigs = new GigRepository(_context);
             IRepoAttendance = new AttendanceRepository(_context);
             IRepoGenres = new GenresRepository(_context);
             IRepoFollowings = new FollowingsRepository(_context);
+            IRepoNotification = new NotificationRepository(_context);
         }
 
         public void Complete()

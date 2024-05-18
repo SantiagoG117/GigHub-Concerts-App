@@ -15,7 +15,7 @@ namespace GigHub.Controllers
 {
     public class GigController : Controller
     {
-        //Create access to the Database repositories
+        //Create dependency to the Core module
         private readonly IUnitOfWork _unitOfWork;
 
         

@@ -6,6 +6,7 @@ using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 using AutoMapper;
+using GigHub.Core;
 using GigHub.Core.Dtos;
 using GigHub.Core.Models;
 using GigHub.Persistance;
@@ -16,11 +17,12 @@ namespace GigHub.Controllers.Api
     [Authorize] //API available to login user only
     public class NotificationsController : ApiController
     {
-        private ApplicationDbContext _context;
+        private readonly IUnitOfWork _unitOfWork;
 
         public NotificationsController()
         {
-            _context = new ApplicationDbContext();
+            //Grants access to the database and repositories
+            _unitOfWork = new UnitOfWork(new ApplicationDbContext());
         }
 
         [HttpGet]
@@ -29,15 +31,12 @@ namespace GigHub.Controllers.Api
             var curUserId = User.Identity.GetUserId();
 
             //Get the unread Notifications for the current user
-            var notifications = _context.UserNotifications.
-                Where(un => un.UserId == curUserId ).//Get the unread user notifications for the current user
-                Select(un => un.Notification). //Select the Notification objects
-                Include(n => n.Gig.Artist). //Eager load the Gig and Artist of each notification
-                ToList();
+            var notifications = _unitOfWork.IRepoNotification.GetNotificationsForUser(curUserId);
 
             return notifications.Select(Mapper.Map<Notification, NotificationDto>);
 
         }
+
 
 
         /// <summary>
@@ -50,9 +49,7 @@ namespace GigHub.Controllers.Api
             var curUserId = User.Identity.GetUserId();
 
             //Get the unread User Notifications for the current user
-            var notifications = _context.UserNotifications
-                .Where(un => un.UserId == curUserId && !un.IsRead)
-                .ToList();
+            var notifications = _unitOfWork.IRepoNotification.GetUnreadUserNotifications(curUserId);
 
             /*
              * Set the notifications as read: Behavior reach domain model. The controller's responsibility is to just
@@ -61,10 +58,11 @@ namespace GigHub.Controllers.Api
 
             notifications.ForEach(n => n.Read());
 
-            _context.SaveChanges();
+            _unitOfWork.Complete();
 
 
             return Ok();
         }
+
     }
 }
